@@ -1,3 +1,5 @@
+import os
+import subprocess
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -26,10 +28,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+_worker_process: subprocess.Popen | None = None
+
 
 @app.on_event("startup")
 def on_startup():
+    global _worker_process
     init_db()
+
+    # For free-tier / single-service deployments, run the Celery worker as a
+    # child process of the API instead of a separate paid worker service.
+    # Set RUN_EMBEDDED_WORKER=true to enable this; in a normal multi-service
+    # deployment (e.g. docker-compose, or a paid Render worker), leave it
+    # unset and run `celery -A app.celery_app worker` as its own process instead.
+    if os.getenv("RUN_EMBEDDED_WORKER", "false").lower() == "true":
+        _worker_process = subprocess.Popen(
+            ["celery", "-A", "app.celery_app", "worker", "--loglevel=info", "-P", "solo"]
+        )
+
+
+@app.on_event("shutdown")
+def on_shutdown():
+    if _worker_process is not None:
+        _worker_process.terminate()
 
 
 app.include_router(inspect.router)
