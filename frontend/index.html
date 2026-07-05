@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>URL Inspector — Scan Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◎</span>
+      <span class="brand-text">URL INSPECTOR</span>
+    </div>
+    <nav class="topbar-actions">
+      <button class="ghost-btn" id="historyToggle">History<span class="key-hint">H</span></button>
+    </nav>
+  </header>
+
+  <main class="console">
+
+    <section class="hero">
+      <p class="eyebrow">/// domain reconnaissance</p>
+      <h1>Point it at a link.<br>Watch the checks run.</h1>
+      <p class="hero-sub">DNS resolution, WHOIS age, TLS certificate health, and reputation
+        signals — queued as a real background job, not a guess made on page load.</p>
+    </section>
+
+    <section class="scan-panel">
+      <form id="scanForm" class="scan-form" autocomplete="off">
+        <label for="linkInput" class="sr-only">URL to inspect</label>
+        <input id="linkInput" name="url" type="text" placeholder="example.com or https://example.com/path" />
+        <button type="submit" id="scanBtn">
+          <span class="btn-label">Run scan</span>
+        </button>
+      </form>
+      <p class="rate-hint">Limited to a handful of scans per minute per visitor.</p>
+
+      <div id="console-log" class="console-log" hidden>
+        <div class="console-log-header">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="console-log-title">scan.log</span>
+        </div>
+        <div id="logLines" class="log-lines"></div>
+      </div>
+
+      <div id="verdictCard" class="verdict-card" hidden>
+        <div class="verdict-top">
+          <span id="verdictBadge" class="verdict-badge">—</span>
+          <span id="verdictDomain" class="verdict-domain"></span>
+          <span id="cacheBadge" class="cache-badge" hidden>cached</span>
+        </div>
+        <div class="score-row">
+          <div class="score-bar-track"><div id="scoreBar" class="score-bar-fill"></div></div>
+          <span id="scoreNumber" class="score-number">0</span>
+        </div>
+        <div id="signalGrid" class="signal-grid"></div>
+        <div class="verdict-actions">
+          <a id="visitLink" class="text-link" target="_blank" rel="noopener">Open link anyway →</a>
+          <a id="reportLink" class="text-link warn" href="https://www.cybercrime.gov.in/" target="_blank" rel="noopener" hidden>Report this URL →</a>
+        </div>
+      </div>
+    </section>
+
+    <aside id="historyPanel" class="history-panel" hidden>
+      <div class="history-head">
+        <h2>Scan History</h2>
+        <div class="history-actions">
+          <button id="exportBtn" class="ghost-btn small">Export</button>
+          <button id="clearBtn" class="ghost-btn small danger">Clear</button>
+        </div>
+      </div>
+      <ul id="historyList" class="history-list"></ul>
+    </aside>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>FastAPI · Celery · Redis · SQLAlchemy</span>
+    <span class="dim">Async job queue architecture — results are cached per domain and rate-limited per visitor.</span>
+  </footer>
+
+  <script>
+    // Point this at your deployed API origin (leave empty to use same-origin, e.g. behind docker-compose)
+    window.API_BASE = "";
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

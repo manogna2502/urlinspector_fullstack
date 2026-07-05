@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend/app:/code/app
+      - ./frontend:/frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./url_inspector.db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FRONTEND_DIR=/frontend
+    depends_on:
+      - redis
+
+  worker:
+    build: ./backend
+    command: celery -A app.celery_app worker --loglevel=info
+    volumes:
+      - ./backend/app:/code/app
+    environment:
+      - DATABASE_URL=sqlite:///./url_inspector.db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
