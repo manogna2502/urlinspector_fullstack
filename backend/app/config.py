@@ -15,7 +15,7 @@ def _normalize_redis_url(url: str) -> str:
     parsed = urlparse(url)
     query = parse_qs(parsed.query)
     if "ssl_cert_reqs" not in query:
-        query["ssl_cert_reqs"] = ["CERT_REQUIRED"]
+        query["ssl_cert_reqs"] = ["required"]
     new_query = urlencode(query, doseq=True)
     return urlunparse(parsed._replace(query=new_query))
 
