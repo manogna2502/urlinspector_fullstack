@@ -1,4 +1,5 @@
 import json
+import ssl
 from typing import Any, Optional
 
 import redis
@@ -15,7 +16,10 @@ def get_redis() -> Optional[redis.Redis]:
     if _redis_client is not None:
         return _redis_client
     try:
-        client = redis.from_url(settings.REDIS_URL, decode_responses=True, socket_connect_timeout=2)
+        kwargs = {"decode_responses": True, "socket_connect_timeout": 2}
+        if settings.REDIS_URL.startswith("rediss://"):
+            kwargs["ssl_cert_reqs"] = ssl.CERT_REQUIRED
+        client = redis.from_url(settings.REDIS_URL, **kwargs)
         client.ping()
         _redis_client = client
         return client
