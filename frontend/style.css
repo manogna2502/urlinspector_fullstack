@@ -116,9 +116,6 @@ a { color: var(--brand); }
   padding: 76px 0 40px;
   text-align: center;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 .hero-decor {
   position: absolute; top: 0; left: 0; width: 100%; height: 170px;
@@ -126,10 +123,11 @@ a { color: var(--brand); }
 }
 .hero > * { position: relative; z-index: 1; }
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
+  width: fit-content; margin: 0 auto 20px;
   font-family: var(--mono); font-size: 12.5px; font-weight: 500;
   color: var(--brand); background: var(--brand-bg);
-  padding: 6px 14px; border-radius: 999px; margin: 0 0 20px;
+  padding: 6px 14px; border-radius: 999px;
 }
 .hero h1 {
   font-family: var(--display); font-weight: 700;
