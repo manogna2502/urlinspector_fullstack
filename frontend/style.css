@@ -118,7 +118,7 @@ a { color: var(--brand); }
   overflow: hidden;
 }
 .hero-decor {
-  position: absolute; inset: -20px -20px auto -20px; height: 420px;
+  position: absolute; top: 0; left: 0; right: 0; height: 170px;
   z-index: 0; pointer-events: none;
 }
 .hero > * { position: relative; z-index: 1; }
