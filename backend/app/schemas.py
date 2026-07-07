@@ -47,6 +47,7 @@ class HistoryItem(BaseModel):
     verdict: Optional[str] = None
     risk_score: Optional[float] = None
     created_at: datetime
+    from_cache: bool = False
 
     class Config:
         from_attributes = True

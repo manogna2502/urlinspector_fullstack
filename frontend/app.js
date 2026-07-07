@@ -20,6 +20,11 @@ const els = {
   historyList: document.getElementById("historyList"),
   exportBtn: document.getElementById("exportBtn"),
   clearBtn: document.getElementById("clearBtn"),
+  statsGrid: document.getElementById("statsGrid"),
+  statTotal: document.getElementById("statTotal"),
+  statDomains: document.getElementById("statDomains"),
+  statFlagged: document.getElementById("statFlagged"),
+  statCached: document.getElementById("statCached"),
 };
 
 const STEP_SCRIPT = [
@@ -38,6 +43,7 @@ els.exportBtn.addEventListener("click", exportHistory);
 els.clearBtn.addEventListener("click", clearHistory);
 
 loadHistory();
+loadStats();
 
 async function onSubmit(e) {
   e.preventDefault();
@@ -89,6 +95,7 @@ function pollJob(jobId) {
         pushLog(`$ scan complete — verdict: ${job.verdict}`, verdictLogClass(job.verdict));
         renderVerdict(job);
         loadHistory();
+        loadStats();
         setBusy(false);
       } else if (job.status === "error") {
         clearInterval(pollTimer);
@@ -192,6 +199,28 @@ function escapeHtml(str) {
 function toggleHistory() {
   els.historyPanel.hidden = !els.historyPanel.hidden;
   if (!els.historyPanel.hidden) loadHistory();
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch(`${API_BASE}/api/history/stats`);
+    if (!res.ok) return;
+    const stats = await res.json();
+
+    if (!stats.total_scans) {
+      els.statsGrid.hidden = true;
+      return;
+    }
+
+    els.statsGrid.hidden = false;
+    els.statTotal.textContent = stats.total_scans;
+    els.statDomains.textContent = stats.unique_domains;
+    els.statCached.textContent = stats.cache_hits;
+    const flagged = (stats.verdicts?.suspicious || 0) + (stats.verdicts?.malicious || 0);
+    els.statFlagged.textContent = flagged;
+  } catch (err) {
+    // stats are a nice-to-have; fail quietly
+  }
 }
 
 async function loadHistory() {

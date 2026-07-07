@@ -10,25 +10,77 @@
 </head>
 <body>
 
-  <div class="scanlines" aria-hidden="true"></div>
-
   <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark">◎</span>
-      <span class="brand-text">URL INSPECTOR</span>
+    <div class="topbar-inner">
+      <a href="#" class="brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="17" cy="17" r="12.5" fill="none" stroke="#2F6FED" stroke-width="3"/>
+          <rect x="25.5" y="25.5" width="5" height="13" rx="2.5" transform="rotate(45 28 32)" fill="#0F1B33"/>
+          <path d="M17 9.5 L22.7 11.7 V17 C22.7 20.6 20.4 22.9 17 24.3 C13.6 22.9 11.3 20.6 11.3 17 V11.7 Z" fill="#0F1B33"/>
+          <path d="M14.2 17 L16.3 19.1 L19.8 14.8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="27" cy="8.5" r="3" fill="#FF4D79"/>
+        </svg>
+        <span class="brand-text">URL INSPECTOR</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#what-we-check">What we check</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn btn-ghost" id="historyToggle">History<span class="key-hint">H</span></button>
+      </div>
     </div>
-    <nav class="topbar-actions">
-      <button class="ghost-btn" id="historyToggle">History<span class="key-hint">H</span></button>
-    </nav>
   </header>
 
   <main class="console">
 
     <section class="hero">
+      <svg class="hero-decor" viewBox="0 0 1080 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g opacity="0.5" stroke="#2F6FED" stroke-width="2.5" stroke-linecap="round">
+          <path d="M70 60 L82 72 M82 60 L70 72"/>
+          <path d="M960 90 L972 102 M972 90 L960 102"/>
+          <path d="M120 300 L132 312 M132 300 L120 312"/>
+          <path d="M1000 260 L1012 272 M1012 260 L1000 272"/>
+        </g>
+        <g opacity="0.35" fill="#2F6FED">
+          <circle cx="150" cy="120" r="4"/>
+          <circle cx="920" cy="180" r="4"/>
+          <circle cx="230" cy="220" r="3"/>
+          <circle cx="850" cy="70" r="3"/>
+          <circle cx="60" cy="200" r="3"/>
+        </g>
+        <g opacity="0.35" stroke="#FF4D79" stroke-width="2.5" stroke-linecap="round">
+          <line x1="180" y1="80" x2="204" y2="80"/>
+          <line x1="880" y1="300" x2="904" y2="300"/>
+          <line x1="40" y1="340" x2="64" y2="340"/>
+        </g>
+      </svg>
       <p class="eyebrow">/// domain reconnaissance</p>
       <h1>Point it at a link.<br>Watch the checks run.</h1>
       <p class="hero-sub">DNS resolution, WHOIS age, TLS certificate health, and reputation
         signals — queued as a real background job, not a guess made on page load.</p>
+    </section>
+
+    <section class="stats-section">
+      <div class="stats-grid" id="statsGrid" hidden>
+        <div class="stat-card">
+          <span id="statTotal" class="stat-number">0</span>
+          <span class="stat-label">scans run</span>
+        </div>
+        <div class="stat-card">
+          <span id="statDomains" class="stat-number">0</span>
+          <span class="stat-label">unique domains</span>
+        </div>
+        <div class="stat-card">
+          <span id="statFlagged" class="stat-number flagged">0</span>
+          <span class="stat-label">flagged suspicious/malicious</span>
+        </div>
+        <div class="stat-card">
+          <span id="statCached" class="stat-number">0</span>
+          <span class="stat-label">served from cache</span>
+        </div>
+      </div>
     </section>
 
     <section class="scan-panel">
@@ -45,6 +97,7 @@
         <div class="console-log-header">
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
           <span class="console-log-title">scan.log</span>
+          <span id="logElapsed" class="log-elapsed"></span>
         </div>
         <div id="logLines" class="log-lines"></div>
       </div>
@@ -71,18 +124,125 @@
       <div class="history-head">
         <h2>Scan History</h2>
         <div class="history-actions">
-          <button id="exportBtn" class="ghost-btn small">Export</button>
-          <button id="clearBtn" class="ghost-btn small danger">Clear</button>
+          <button id="exportBtn" class="btn btn-ghost small">Export</button>
+          <button id="clearBtn" class="btn btn-ghost small danger">Clear</button>
         </div>
       </div>
       <ul id="historyList" class="history-list"></ul>
     </aside>
 
+    <section id="what-we-check" class="section">
+      <div class="section-head">
+        <p class="eyebrow">/// what we check</p>
+        <h2>Four real signals, not a guess</h2>
+        <p>Each scan runs the same checks a security-conscious person would do by hand — just automated and queued as a background job.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">◈</span>
+          <h3>DNS resolution</h3>
+          <p>Resolves the domain's A and MX records. A domain that doesn't resolve at all,
+            or resolves to nothing meaningful, is treated as a risk signal on its own.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">◷</span>
+          <h3>WHOIS age</h3>
+          <p>Looks up when the domain was registered. Phishing domains are frequently
+            registered days or hours before use — age under 30 days raises the score.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⛨</span>
+          <h3>TLS certificate</h3>
+          <p>Checks whether HTTPS is actually configured and the certificate hasn't expired.
+            Missing or expired certs are a meaningful red flag on their own.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">◎</span>
+          <h3>Reputation signals</h3>
+          <p>Cross-references a blacklist, checks for phishing-style keywords in the URL
+            (login, verify, secure...), and optionally Google Safe Browsing's threat list.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="section">
+      <div class="section-head">
+        <p class="eyebrow">/// how it works</p>
+        <h2>An actual job queue, not a spinner</h2>
+        <p>Submitting a URL doesn't run the checks inline — it queues real background work.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <h3>You submit a link</h3>
+          <p>The API validates it, checks the cache for a recent result on that domain, and returns instantly if found.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <h3>A job is queued</h3>
+          <p>Otherwise a scan job is created and handed to a Celery worker — the request doesn't block waiting for it.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <h3>Checks run async</h3>
+          <p>DNS, WHOIS, TLS, and reputation checks run in the background while the page polls for status.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">4</span>
+          <h3>Verdict + caching</h3>
+          <p>A risk score and verdict are computed and stored, then cached by domain so the next scan of it is instant.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="section-head">
+        <p class="eyebrow">/// faq</p>
+        <h2>Common questions</h2>
+      </div>
+      <div class="faq">
+        <details class="faq-item">
+          <summary>Does this guarantee a link is safe?</summary>
+          <p>No — it's a risk signal, not a guarantee. A low score means the checks found nothing
+            suspicious; it doesn't replace judgment, especially for links asking for credentials or payment.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Why does the first scan of a domain feel slower?</summary>
+          <p>The first scan runs the full pipeline (DNS, WHOIS, TLS, reputation) as a background job.
+            Repeat scans of the same domain are served from cache and return almost instantly.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is my scan history private?</summary>
+          <p>History is stored so you (and this demo) can browse past scans and export them as JSON.
+            It isn't tied to a login — anyone with access to this instance can see the shared history.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What happens with a suspicious or malicious verdict?</summary>
+          <p>You'll see which signals triggered it, and an option to report the link instead of opening it.
+            Opening it anyway is still possible — the tool informs, it doesn't block.</p>
+        </details>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site-footer">
-    <span>FastAPI · Celery · Redis · SQLAlchemy</span>
-    <span class="dim">Async job queue architecture — results are cached per domain and rate-limited per visitor.</span>
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="17" cy="17" r="12.5" fill="none" stroke="#2F6FED" stroke-width="3"/>
+          <rect x="25.5" y="25.5" width="5" height="13" rx="2.5" transform="rotate(45 28 32)" fill="#0F1B33"/>
+          <path d="M17 9.5 L22.7 11.7 V17 C22.7 20.6 20.4 22.9 17 24.3 C13.6 22.9 11.3 20.6 11.3 17 V11.7 Z" fill="#0F1B33"/>
+          <path d="M14.2 17 L16.3 19.1 L19.8 14.8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="27" cy="8.5" r="3" fill="#FF4D79"/>
+        </svg>
+        <span>URL INSPECTOR</span>
+      </div>
+      <div class="footer-meta">
+        FastAPI · Celery · Redis · SQLAlchemy<br>
+        <span class="dim">Async job queue architecture — results are cached per domain and rate-limited per visitor.</span>
+      </div>
+    </div>
   </footer>
 
   <script>
