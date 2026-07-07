@@ -111,7 +111,7 @@ a { color: var(--brand); }
 
 /* ---------- Hero ---------- */
 
-..hero {
+.hero {
   position: relative;
   padding: 76px 0 40px;
   text-align: center;
